@@ -10,14 +10,39 @@ Define what Phase 1 includes and excludes.
 ---
 
 ## 2. Initial Data Sources
-Select 3–5 high-signal sources that are easy to ingest (RSS/API preferred).
+## Initial Data Sources
 
-For each source document:
-- Source name
-- URL
-- Access method (RSS/API/web)
-- Update frequency
-- Why it matters
+The initial sources for Phase 1 are selected based on two criteria:
+1. They are part of the founder’s real research workflow
+2. They can be accessed via RSS or structured web feeds
+
+These sources focus on emerging technology, venture capital, and future-oriented investment themes.
+
+### 1. Peter Diamandis Newsletter
+Source: Diamandis Newsletter / Abundance / Moonshots
+Type: Newsletter
+Access Method: RSS
+Reason: Future technology trends, longevity, AI, space, and exponential technologies.
+
+### 2. ARK Invest Research
+Source: ARK Invest Blog / Research
+Type: Research blog
+Access Method: RSS
+Reason: Deep research into disruptive innovation sectors including AI, robotics, energy storage, and genomics.
+
+### 3. Andreessen Horowitz (a16z)
+Source: a16z Blog / Newsletter
+Type: VC research commentary
+Access Method: RSS
+Reason: Venture capital perspective on emerging technology sectors and startup ecosystems.
+
+### 4. All-In Podcast
+Source: Podcast
+Type: Podcast / YouTube
+Access Method: Initially episode metadata + transcript if available
+Reason: Technology, venture capital, geopolitics, and macro discussions relevant to innovation investing.
+
+Note: Audio processing may be added in later phases if transcripts are not available.
 
 ---
 
