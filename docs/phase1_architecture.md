@@ -45,7 +45,6 @@ Define the standard object every item becomes.
 All sources will be converted into one standard format so they can be stored and displayed consistently.
 
 Draft fields:
-
 - id
 - source_name
 - title
@@ -53,8 +52,13 @@ Draft fields:
 - published_date
 - url
 - raw_text
-- summary (optional)
+- summary
+- analysis
+- investment_implications
 - tags (optional)
+- created_at
+
+This format may change after reviewing the actual data from the selected sources.
 
 This format may change after reviewing the actual data from the selected sources.
 
@@ -248,13 +252,89 @@ Ingestion state tracking:
 - Track which article URLs have already been stored
 
 ---
-
 ## 6. Storage + Retrieval
+
 Define:
+
 - database structure
 - how items are stored
 - how the feed is queried
 - indexes or keys for speed and deduplication
+
+
+### Database Structure
+
+Phase 1 uses one main table to store market intelligence items.
+
+Each row represents one article or source item.
+
+Main fields:
+
+- id
+- source_name
+- title
+- author
+- published_date
+- url
+- raw_text
+- summary
+- analysis
+- investment_implications
+- tags
+- created_at
+
+
+### How Items Are Stored
+
+After a source item is fetched and cleaned, it is converted into the standard data format.
+
+The system then stores:
+
+- source metadata
+- article text
+- AI-generated output
+- timestamps
+
+Each item is stored as a single record in the database.
+
+
+### How the Feed Is Queried
+
+The frontend will query the database for the most recent items.
+
+Default feed behavior:
+
+- sort by published_date, newest first
+- show title, source, publish date, summary, analysis, and investment implications
+- link back to the original article
+
+Phase 1 retrieval should support:
+
+- latest items feed
+- filter by source
+- simple search later if needed
+
+
+### Indexes and Keys
+
+Primary key:
+
+- id
+
+Unique key for deduplication:
+
+- url
+
+Indexes:
+
+- published_date
+- source_name
+
+Reason:
+
+- `url` prevents duplicate records
+- `published_date` makes the main feed load faster
+- `source_name` makes source filtering faster
 
 ---
 
