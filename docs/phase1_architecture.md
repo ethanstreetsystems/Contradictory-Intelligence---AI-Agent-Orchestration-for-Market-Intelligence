@@ -341,20 +341,37 @@ Reason:
 ## 7. Minimal UI Screens
 Define the basic interface.
 
-Example:
+UI Version 1.0:
 - feed page (latest items)
 - item detail page
 - filters or search (optional)
 
 ---
 
-## 8. Minimal AI Enrichment (Optional)
-Decide whether Phase 1 includes:
-- summaries
+## 8. Minimal AI Enrichment
+
+Define the AI-generated output added to each source item.
+
+Version 1.0 of Contradictory Intelligence (CI) will generate the following fields:
+
+- summary
+- analysis
+- investment_implications
+
+Definitions:
+
+- summary: a short overview of the article content
+- analysis: key themes, ideas, or signals extracted from the article
+- investment_implications: potential relevance for investing, including sectors, companies, or technologies that may benefit or be negatively impacted
+
+Optional features for later versions:
+
 - tags
 - ticker extraction
 
-If included, define exactly what gets generated.
+Reason:
+
+Version 1.0 should focus on transforming raw source content into structured intelligence that can help inform investment decisions while keeping the system simple.
 
 ---
 
