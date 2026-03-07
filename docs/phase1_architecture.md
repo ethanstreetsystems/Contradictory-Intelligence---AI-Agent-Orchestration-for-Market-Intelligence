@@ -61,15 +61,93 @@ This format may change after reviewing the actual data from the selected sources
 ---
 
 ## 4. Architecture + Stack
-Define the core technology choices.
 
-Example:
-- Backend
-- Database
-- Frontend
-- Job scheduler
+Define the core technology choices used in the Phase 1 MVP.
 
-Define how the system components interact.
+The system architecture follows a simple pipeline:
+
+Ingest → Normalize → Analyze → Store → Display
+
+
+### Backend
+
+Language: Python
+
+Responsibilities:
+
+- Fetch RSS feeds
+- Extract article content
+- Convert items into the standard format
+- Run AI analysis
+- Save items to the database
+
+Python is used because it has strong libraries for RSS feeds, data pipelines, and AI workflows.
+
+
+### Database
+
+Database: PostgreSQL
+
+Stores structured data for each item:
+
+- id
+- source_name
+- title
+- author
+- published_date
+- url
+- raw_text
+- summary
+- analysis
+- investment_implications
+- tags (optional)
+
+
+### Frontend
+
+Simple web interface that displays collected items.
+
+Phase 1 UI should show:
+
+- title
+- source
+- publish date
+- summary
+- analysis
+- investment implications
+- link to original article
+
+Goal: prove the system can turn raw source content into useful investor-facing output.
+
+
+### Job Scheduler
+
+The system runs on a schedule and checks the selected feeds for new content.
+
+Initial schedule:
+
+- every other day
+
+Reason:
+
+- keeps the MVP simple
+- reduces unnecessary AI processing
+- helps control API costs during early development
+
+
+### System Flow
+
+RSS Feed  
+↓  
+Python ingestion script  
+↓  
+Normalize to standard format  
+↓  
+Run AI analysis  
+↓  
+Store in database  
+↓  
+Frontend displays items
 
 ---
 
