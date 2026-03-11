@@ -1,10 +1,12 @@
 import json
 from pathlib import Path
-from datetime import datetime, UTC
+from datetime import datetime, timezone
 
 
-# Build file paths from the project root
+# Project root directory
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Input and output data files
 INPUT_FILE = BASE_DIR / "data" / "rss_items.json"
 OUTPUT_FILE = BASE_DIR / "data" / "enriched_items.json"
 
@@ -26,7 +28,7 @@ def save_items(file_path: Path, items: list) -> None:
 
 
 def normalize_text(text: str) -> str:
-    """Clean up extra spaces and line breaks."""
+    """Clean whitespace and line breaks."""
     if not text:
         return ""
     return " ".join(text.split())
@@ -34,8 +36,8 @@ def normalize_text(text: str) -> str:
 
 def create_summary(text: str, max_length: int = 240) -> str:
     """
-    Create a simple MVP summary.
-    For now, this is just cleaned text trimmed to a max length.
+    Create a simple summary for MVP.
+    This trims the cleaned text to a maximum length.
     """
     clean_text = normalize_text(text)
 
@@ -46,7 +48,7 @@ def create_summary(text: str, max_length: int = 240) -> str:
 
 
 def enrich_item(item: dict) -> dict:
-    """Return a copy of one item with enrichment fields added."""
+    """Add enrichment fields to an item."""
     enriched_item = item.copy()
 
     source_text = enriched_item.get("clean_description", "")
@@ -54,12 +56,12 @@ def enrich_item(item: dict) -> dict:
 
     enriched_item["summary"] = create_summary(clean_text)
     enriched_item["text_length"] = len(clean_text)
-    enriched_item["enriched_at"] = datetime.now(UTC).isoformat()
+    enriched_item["enriched_at"] = datetime.now(timezone.utc).isoformat()
 
     return enriched_item
 
 
-def main() -> None:
+def main():
     items = load_items(INPUT_FILE)
 
     if not items:
