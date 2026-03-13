@@ -6,7 +6,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 
-from openai import OpenAI
+import anthropic
+from dotenv import load_dotenv
+load_dotenv()
 
 
 # ============================================================
@@ -21,7 +23,7 @@ INPUT_PATH = BASE_DIR / "data" / "pass1enriched_items.json"
 OUTPUT_PATH = BASE_DIR / "data" / "pass2enriched_items.json"
 
 # Model settings
-MODEL_NAME = os.getenv("CI_PASS2_MODEL", "gpt-4.1-mini")
+MODEL_NAME = os.getenv("CI_PASS2_MODEL", "claude-sonnet-4-6")
 
 # Cost / usage safety settings
 MAX_TEXT_CHARS = int(os.getenv("CI_MAX_TEXT_CHARS", "12000"))
@@ -32,7 +34,7 @@ MAX_TOTAL_INPUT_CHARS_PER_RUN = int(os.getenv("CI_MAX_TOTAL_INPUT_CHARS_PER_RUN"
 REQUEST_DELAY_SECONDS = float(os.getenv("CI_REQUEST_DELAY_SECONDS", "0.5"))
 
 # Create the API client
-client = OpenAI()
+client = anthropic.Anthropic()
 
 
 # ============================================================
@@ -276,21 +278,26 @@ def call_model(record: Dict[str, Any]) -> Dict[str, Any]:
     schema = build_schema()
     prompt = build_prompt(record)
 
-    response = client.responses.create(
+    response = client.messages.create(
         model=MODEL_NAME,
-        input=prompt,
+        max_tokens=4096,
         temperature=0.2,
-        text={
-            "format": {
-                "type": "json_schema",
+        tools=[
+            {
                 "name": "ci_pass2_enrichment",
-                "schema": schema,
-                "strict": True
+                "description": "Return structured market intelligence extracted from the article.",
+                "input_schema": schema,
             }
-        }
+        ],
+        tool_choice={"type": "tool", "name": "ci_pass2_enrichment"},
+        messages=[{"role": "user", "content": prompt}],
     )
 
-    return json.loads(response.output_text)
+    for block in response.content:
+        if block.type == "tool_use":
+            return block.input
+
+    raise ValueError("Model did not return a tool_use block.")
 
 
 # ============================================================
@@ -426,7 +433,6 @@ def main() -> None:
         # ----------------------------------------------------
         if enrichment_status != "ready_for_ai":
             if existing_pass2_record:
-                # Keep any existing Pass 2 info if it exists
                 output_records.append(existing_pass2_record)
             else:
                 current_record["pass2_status"] = "skipped"
